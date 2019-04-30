@@ -1,4 +1,6 @@
 class SongsController < ApplicationController
+  #ppl not logged in can only see show & index
+  before_action :authenticate_user!, :except => [ :show, :index ]
 
   def index
     @songs = Song.all
@@ -28,12 +30,16 @@ class SongsController < ApplicationController
   def create
     @song = Song.new(song_params)
 
+    @song.user = current_user
+
     if @song.save
       redirect_to @song
     else
       render 'new'
     end
   end
+
+
 
   def update
     @song = Song.find(params[:id])
